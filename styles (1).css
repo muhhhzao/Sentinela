@@ -156,9 +156,6 @@ header {
   box-shadow: 0 0 12px rgba(0,212,255,0.2);
 }
 
-/* ========================
-   NOTIFICATIONS
-======================== */
 .notif-stack {
   position: fixed;
   top: 80px;
@@ -212,9 +209,7 @@ header {
   color: var(--ok);
 }
 
-/* ========================
-   MODAL
-======================== */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -395,18 +390,13 @@ header {
   background: rgba(0,212,255,0.1);
 }
 
-/* ========================
-   MAIN
-======================== */
 main {
   position: relative;
   z-index: 1;
   padding: 0 0 24px;
 }
 
-/* ========================
-   ALERT BANNER
-======================== */
+
 .alert-banner {
   display: none;
   align-items: center;
@@ -480,9 +470,6 @@ main {
   color: var(--muted2);
 }
 
-/* ========================
-   DASHBOARD GRID
-======================== */
 .dashboard-grid {
   padding: 20px 28px;
   display: grid;
@@ -519,9 +506,6 @@ main {
   gap: 16px;
 }
 
-/* ========================
-   PANELS
-======================== */
 .panel {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -550,9 +534,6 @@ main {
   border-bottom: 1px solid var(--border2);
 }
 
-/* ========================
-   STATUS PANEL
-======================== */
 .loading-overlay {
   position: absolute;
   inset: 0;
@@ -639,10 +620,6 @@ main {
   margin-top: 12px;
   letter-spacing: 1px;
 }
-
-/* ========================
-   COMPASS
-======================== */
 .wind-compass {
   display: flex;
   justify-content: center;
@@ -696,10 +673,6 @@ main {
   background: var(--danger);
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
-
-/* ========================
-   MAP PANEL
-======================== */
 .tabs {
   display: flex;
   gap: 4px;
@@ -784,10 +757,6 @@ main {
   height: 8px;
   border-radius: 50%;
 }
-
-/* ========================
-   RISK DISPLAY
-======================== */
 .risk-display {
   display: flex;
   align-items: center;
@@ -825,10 +794,6 @@ main {
   border-radius: 2px;
   transition: width 1s ease, background 0.5s ease;
 }
-
-/* ========================
-   ALERTS PANEL
-======================== */
 .alert-card {
   border: 1px solid var(--border);
   padding: 10px 12px;
@@ -871,10 +836,6 @@ main {
   color: var(--muted2);
   margin-top: 6px;
 }
-
-/* ========================
-   FORECAST STRIP
-======================== */
 .forecast-panel {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -955,10 +916,6 @@ main {
   color: var(--muted);
   margin-top: 2px;
 }
-
-/* ========================
-   CHART PANELS
-======================== */
 .chart-panel {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -997,10 +954,6 @@ main {
   width: 100% !important;
   height: 100% !important;
 }
-
-/* ========================
-   FOOTER
-======================== */
 footer {
   text-align: center;
   padding: 16px;
@@ -1010,10 +963,6 @@ footer {
   letter-spacing: 2px;
   border-top: 1px solid var(--border2);
 }
-
-/* ========================
-   RESPONSIVE
-======================== */
 @media (max-width: 1100px) {
   .dashboard-grid {
     grid-template-columns: 260px 1fr;
