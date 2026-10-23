@@ -1,6 +1,3 @@
-// ========================
-// STATE
-// ========================
 const state = {
   config: {
     lat: -23.5505,
@@ -23,17 +20,9 @@ const state = {
     labels: Array(24).fill('--')
   }
 };
-
-// ========================
-// CHART INSTANCES
-// ========================
 let precipChartInst = null;
 let windChartInst   = null;
 let tempChartInst   = null;
-
-// ========================
-// CLOCK
-// ========================
 function updateClock() {
   document.getElementById('clock').textContent =
     new Date().toLocaleTimeString('pt-BR', { hour12: false });
@@ -41,9 +30,6 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// ========================
-// MODAL
-// ========================
 function openModal() {
   document.getElementById('modalOverlay').classList.add('open');
   document.getElementById('latInput').value   = state.config.lat;
@@ -59,10 +45,6 @@ function closeModal() {
 document.getElementById('modalOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
-
-// ========================
-// GEOCODING
-// ========================
 async function geocodeCity() {
   const q = document.getElementById('citySearch').value.trim();
   if (!q) return;
@@ -96,9 +78,6 @@ document.getElementById('citySearch').addEventListener('keydown', e => {
   if (e.key === 'Enter') geocodeCity();
 });
 
-// ========================
-// SEARCH LOCATION (barra principal)
-// ========================
 async function searchLocation() {
   const q = document.getElementById('searchCity').value.trim();
   if (!q) return;
@@ -137,10 +116,6 @@ async function searchLocation() {
 document.getElementById('searchCity').addEventListener('keydown', e => {
   if (e.key === 'Enter') searchLocation();
 });
-
-// ========================
-// SAVE CONFIG
-// ========================
 function saveConfig() {
   state.config.lat     = parseFloat(document.getElementById('latInput').value)  || -23.5505;
   state.config.lon     = parseFloat(document.getElementById('lonInput').value)  || -46.6333;
@@ -155,9 +130,6 @@ function saveConfig() {
   state.updateInterval = setInterval(fetchOpenMeteo, 600000);
 }
 
-// ========================
-// NOTIFICATION
-// ========================
 function showNotif(msg, type = 'info') {
   const stack = document.getElementById('notifStack');
   const notif = document.createElement('div');
@@ -171,18 +143,12 @@ function showNotif(msg, type = 'info') {
   }, 4000);
 }
 
-// ========================
-// LOADING
-// ========================
 function showLoading(show) {
   const el = document.getElementById('statusLoading');
   if (!el) return;
   show ? el.classList.remove('hidden') : el.classList.add('hidden');
 }
 
-// ========================
-// FETCH OPEN-METEO
-// ========================
 async function fetchOpenMeteo() {
   showLoading(true);
 
@@ -204,20 +170,16 @@ async function fetchOpenMeteo() {
     state.demoMode = false;
 
     processWeatherData(data);
-    showNotif('Dados atualizados', 'ok');
+    showNotif('Dados atualizados', 'OK');
   } catch (e) {
     showNotif('Erro ao buscar dados — verifique a conexão', 'danger');
     showLoading(false);
   }
 }
 
-// ========================
-// PROCESS WEATHER DATA
-// ========================
 function processWeatherData(data) {
   const c = data.current;
 
-  // Preenche estado
   state.windDirection  = c.wind_direction_10m || 0;
   state.hourlyForecast = buildHourlyForecast(data);
   state.chartData      = buildChartData(data);
@@ -233,9 +195,6 @@ function processWeatherData(data) {
   document.getElementById('dataSource').textContent = `FONTE: OPEN-METEO — ${state.config.city}`;
 }
 
-// ========================
-// UPDATE DASHBOARD
-// ========================
 function updateDashboard(c) {
   const wmo = getWMOInfo(c.weather_code);
 
@@ -252,18 +211,13 @@ function updateDashboard(c) {
   document.getElementById('regionVal').textContent       = state.config.city;
   document.getElementById('radarTime').textContent       = `ULT. ATUALIZAÇÃO: ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
 
-  // big chart values
   document.getElementById('precipBig').textContent       = (c.precipitation || 0).toFixed(1);
   document.getElementById('windBig').textContent         = Math.round(c.wind_speed_10m);
   document.getElementById('tempBig').textContent         = Math.round(c.temperature_2m);
 
-  // compass
   updateCompass(c.wind_direction_10m || 0);
 }
 
-// ========================
-// COMPASS
-// ========================
 function updateCompass(deg) {
   state.windDirection = deg;
   const arrow = document.getElementById('compassArrow');
@@ -281,12 +235,10 @@ function degToCardinal(deg) {
   return dirs[Math.round(deg / 22.5) % 16];
 }
 
-// ========================
-// WMO WEATHER CODES
-// ========================
+
 function getWMOInfo(code) {
   const map = {
-    0:  { icon: '☀️',  name: 'CÉLIO LIMPO',       desc: 'Sem nuvens' },
+    0:  { icon: '☀️',  name: 'CÉU LIMPO',       desc: 'Sem nuvens' },
     1:  { icon: '🌤',  name: 'LIMPO',             desc: 'Principalmente limpo' },
     2:  { icon: '⛅',  name: 'PARCIALMENTE NUBLADO', desc: 'Nuvens parciais' },
     3:  { icon: '☁️',  name: 'NUBLADO',           desc: 'Cobertura total' },
@@ -313,10 +265,6 @@ function getWMOInfo(code) {
   };
   return map[code] || { icon: '🌡', name: 'DADO INDISPONÍVEL', desc: `Código ${code}` };
 }
-
-// ========================
-// BUILD HOURLY FORECAST
-// ========================
 function buildHourlyForecast(data) {
   const h   = data.hourly;
   const now = new Date();
@@ -338,9 +286,7 @@ function buildHourlyForecast(data) {
   return result;
 }
 
-// ========================
-// BUILD CHART DATA
-// ========================
+
 function buildChartData(data) {
   const h      = data.hourly;
   const now    = new Date();
@@ -360,41 +306,38 @@ function buildChartData(data) {
   return { precip, wind, temp, labels };
 }
 
-// ========================
-// UPDATE ALERTS
-// ========================
+
 function updateAlerts(c) {
   const container = document.getElementById('alertsContainer');
   const alerts    = [];
 
   if (c.wind_gusts_10m >= 80) {
-    alerts.push({ level: 'danger', title: '🌪 RAJADAS EXTREMAS', desc: `Rajadas de ${Math.round(c.wind_gusts_10m)} km/h detectadas. Risco de danos.` });
+    alerts.push({ level: 'danger', title: 'RAJADAS EXTREMAS', desc: `Rajadas de ${Math.round(c.wind_gusts_10m)} km/h detectadas. Risco de danos.` });
   } else if (c.wind_gusts_10m >= 50) {
-    alerts.push({ level: 'warn',   title: '💨 VENTO FORTE',     desc: `Rajadas de ${Math.round(c.wind_gusts_10m)} km/h. Atenção.` });
+    alerts.push({ level: 'warn',   title: 'VENTO FORTE',     desc: `Rajadas de ${Math.round(c.wind_gusts_10m)} km/h. Atenção.` });
   }
 
   if (c.precipitation >= 20) {
-    alerts.push({ level: 'danger', title: '🌧 CHUVA INTENSA',   desc: `${c.precipitation.toFixed(1)} mm/h — Risco de alagamentos.` });
+    alerts.push({ level: 'danger', title: 'CHUVA INTENSA',   desc: `${c.precipitation.toFixed(1)} mm/h — Risco de alagamentos.` });
   } else if (c.precipitation >= 5) {
-    alerts.push({ level: 'warn',   title: '🌧 CHUVA MODERADA',  desc: `${c.precipitation.toFixed(1)} mm/h em curso.` });
+    alerts.push({ level: 'warn',   title: 'CHUVA MODERADA',  desc: `${c.precipitation.toFixed(1)} mm/h em curso.` });
   }
 
   const wc = c.weather_code;
   if (wc >= 95) {
-    alerts.push({ level: 'danger', title: '⛈ TEMPESTADE ATIVA', desc: 'Trovoadas com relâmpagos e granizo possível.' });
+    alerts.push({ level: 'danger', title: 'TEMPESTADE ATIVA', desc: 'Trovoadas com relâmpagos e granizo possível.' });
   }
 
   if (c.temperature_2m >= 40) {
-    alerts.push({ level: 'danger', title: '🌡 CALOR EXTREMO',   desc: `${Math.round(c.temperature_2m)}°C — Risco à saúde.` });
+    alerts.push({ level: 'danger', title: 'CALOR EXTREMO',   desc: `${Math.round(c.temperature_2m)}°C — Risco à saúde.` });
   } else if (c.temperature_2m <= 5) {
-    alerts.push({ level: 'warn',   title: '🥶 FRIO INTENSO',    desc: `${Math.round(c.temperature_2m)}°C — Risco de hipotermia.` });
+    alerts.push({ level: 'warn',   title: 'FRIO INTENSO',    desc: `${Math.round(c.temperature_2m)}°C — Risco de hipotermia.` });
   }
 
   if ((c.visibility || 10000) < 1000) {
-    alerts.push({ level: 'warn',   title: '🌫 NEBLINA DENSA',   desc: `Visibilidade: ${((c.visibility||0)/1000).toFixed(1)} km.` });
+    alerts.push({ level: 'warn',   title: 'NEBLINA DENSA',   desc: `Visibilidade: ${((c.visibility||0)/1000).toFixed(1)} km.` });
   }
 
-  // Banner
   const banner = document.getElementById('alertBanner');
   if (alerts.length > 0) {
     const top = alerts[0];
@@ -422,7 +365,6 @@ function updateAlerts(c) {
       </div>`).join('');
   }
 
-  // Histórico
   const hist = document.getElementById('historyContainer');
   const now  = new Date();
   hist.innerHTML = Array.from({ length: 5 }, (_, i) => {
@@ -431,9 +373,7 @@ function updateAlerts(c) {
   }).join('<br>');
 }
 
-// ========================
-// UPDATE RISK LEVEL
-// ========================
+
 function updateRiskLevel(c) {
   let risk = 0;
 
@@ -457,9 +397,7 @@ function updateRiskLevel(c) {
   document.getElementById('riskBarFill').style.background = color;
 }
 
-// ========================
-// FORECAST STRIP
-// ========================
+
 function updateForecastStrip() {
   const strip = document.getElementById('forecastStrip');
 
@@ -481,9 +419,6 @@ function updateForecastStrip() {
   }).join('');
 }
 
-// ========================
-// CHARTS
-// ========================
 function renderCharts() {
   const { precip, wind, temp, labels } = state.chartData;
 
@@ -499,7 +434,6 @@ function renderCharts() {
     animation: { duration: 600 }
   };
 
-  // Precipitação
   const precipCtx = document.getElementById('precipChart').getContext('2d');
   if (precipChartInst) precipChartInst.destroy();
   precipChartInst = new Chart(precipCtx, {
@@ -516,12 +450,10 @@ function renderCharts() {
     options: { ...baseOpts, scales: { x: { display: false }, y: { display: false, beginAtZero: true } } }
   });
 
-  // Tendências
   const maxPrecip = Math.max(...precip.slice(0, 6));
   const avgPrecip = precip.slice(0, 3).reduce((a, b) => a + b, 0) / 3;
   document.getElementById('precipTrend').textContent = maxPrecip > 5 ? '▲ aumentando' : avgPrecip > 0.5 ? '→ estável' : '▼ diminuindo';
 
-  // Vento
   const windCtx = document.getElementById('windChart').getContext('2d');
   if (windChartInst) windChartInst.destroy();
   windChartInst = new Chart(windCtx, {
@@ -545,7 +477,6 @@ function renderCharts() {
   document.getElementById('windTrend').textContent = avgWindLast > avgWindFirst + 5 ? '▲ aumentando' : avgWindLast < avgWindFirst - 5 ? '▼ diminuindo' : '→ estável';
   document.getElementById('windTrend').style.color = avgWindLast > avgWindFirst + 10 ? 'var(--danger)' : 'var(--ok)';
 
-  // Temperatura
   const tempCtx = document.getElementById('tempChart').getContext('2d');
   if (tempChartInst) tempChartInst.destroy();
   tempChartInst = new Chart(tempCtx, {
@@ -570,9 +501,7 @@ function renderCharts() {
   document.getElementById('tempTrend').style.color = tLast > 35 ? 'var(--danger)' : tLast < 10 ? 'var(--accent)' : 'var(--ok)';
 }
 
-// ========================
-// RADAR CANVAS
-// ========================
+
 function updateRadar() {
   const canvas = document.getElementById('radarCanvas');
   if (!canvas) return;
@@ -594,11 +523,9 @@ function updateRadar() {
 function drawRadarFrame(ctx, w, h) {
   ctx.clearRect(0, 0, w, h);
 
-  // fundo
   ctx.fillStyle = '#040c14';
   ctx.fillRect(0, 0, w, h);
 
-  // grade
   ctx.strokeStyle = 'rgba(26,48,69,0.6)';
   ctx.lineWidth   = 0.5;
   for (let x = 0; x < w; x += 40) {
@@ -608,7 +535,6 @@ function drawRadarFrame(ctx, w, h) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
   }
 
-  // círculos de alcance
   const cx = w / 2, cy = h / 2;
   [40, 80, 120].forEach(r => {
     ctx.beginPath();
@@ -618,7 +544,6 @@ function drawRadarFrame(ctx, w, h) {
     ctx.stroke();
   });
 
-  // dados reais: gerar blobs baseados no estado atual
   const data = state.data?.current;
   if (data) {
     const precip = data.precipitation || 0;
@@ -628,7 +553,6 @@ function drawRadarFrame(ctx, w, h) {
       const intensity = Math.min(1, precip / 20);
       const frame     = state.radarFrame;
 
-      // blobs de precipitação animados
       const blobs = [
         { x: cx - 30 + Math.sin(frame * 0.05) * 5, y: cy + 20 + Math.cos(frame * 0.04) * 5, r: 35 + intensity * 25, alpha: 0.25 + intensity * 0.3 },
         { x: cx + 40 + Math.sin(frame * 0.03) * 8, y: cy - 30 + Math.cos(frame * 0.05) * 6, r: 25 + intensity * 15, alpha: 0.15 + intensity * 0.2 },
@@ -650,7 +574,6 @@ function drawRadarFrame(ctx, w, h) {
     }
   }
 
-  // varredura do radar
   const angle = ((state.radarFrame * 6) % 360) * (Math.PI / 180);
   const sweep = ctx.createConicalGradient
     ? null
@@ -671,7 +594,6 @@ function drawRadarFrame(ctx, w, h) {
   ctx.fill();
   ctx.restore();
 
-  // centro
   ctx.beginPath();
   ctx.arc(cx, cy, 4, 0, Math.PI * 2);
   ctx.fillStyle = 'var(--accent)';
@@ -681,7 +603,6 @@ function drawRadarFrame(ctx, w, h) {
   ctx.fill();
   ctx.shadowBlur  = 0;
 
-  // título do radar
   updateRadarTitle();
 }
 
@@ -693,16 +614,14 @@ function updateRadarTitle() {
   if (!c) return;
 
   const wc = c.weather_code || 0;
-  if (wc >= 95)      titleEl.textContent = '⛈ TEMPESTADE DETECTADA';
-  else if (wc >= 80) titleEl.textContent = '🌧 PANCADAS EM CURSO';
-  else if (wc >= 61) titleEl.textContent = '🌧 CHUVA EM CURSO';
-  else if (wc >= 51) titleEl.textContent = '🌦 GAROA DETECTADA';
-  else               titleEl.textContent = `☀️ SEM PRECIPITAÇÃO — ${state.config.city}`;
+  if (wc >= 95)      titleEl.textContent = 'TEMPESTADE DETECTADA';
+  else if (wc >= 80) titleEl.textContent = 'PANCADAS EM CURSO';
+  else if (wc >= 61) titleEl.textContent = 'CHUVA EM CURSO';
+  else if (wc >= 51) titleEl.textContent = 'GAROA DETECTADA';
+  else               titleEl.textContent = `SEM PRECIPITAÇÃO — ${state.config.city}`;
 }
 
-// ========================
-// SWITCH TABS
-// ========================
+
 function switchTab(tab, el) {
   state.currentTab = tab;
 
@@ -718,10 +637,10 @@ function switchTab(tab, el) {
   if (state.radarInterval) clearInterval(state.radarInterval);
 
   const tabLabels = {
-    radar:        '🔴 RADAR DE PRECIPITAÇÃO',
-    precipitacao: '💧 ACUMULADO DE CHUVA',
-    vento:        '💨 CAMPO DE VENTO',
-    temperatura:  '🌡 CAMPO DE TEMPERATURA'
+    radar:        'RADAR DE PRECIPITAÇÃO',
+    precipitacao: 'ACUMULADO DE CHUVA',
+    vento:        'CAMPO DE VENTO',
+    temperatura:  'CAMPO DE TEMPERATURA'
   };
 
   document.getElementById('radarTitle').textContent = tabLabels[tab] || '';
@@ -743,7 +662,6 @@ function drawStaticLayer(ctx, w, h, type) {
   ctx.fillStyle = '#040c14';
   ctx.fillRect(0, 0, w, h);
 
-  // grade
   ctx.strokeStyle = 'rgba(26,48,69,0.5)';
   ctx.lineWidth   = 0.5;
   for (let x = 0; x < w; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
@@ -805,9 +723,7 @@ function drawStaticLayer(ctx, w, h, type) {
   }
 }
 
-// ========================
-// DEMO MODE
-// ========================
+
 function loadDemo() {
   state.demoMode = true;
 
@@ -845,14 +761,11 @@ function loadDemo() {
   showNotif('Modo demonstração ativado', 'warn');
 }
 
-// ========================
-// INIT — abre modal automaticamente
-// ========================
+
 window.addEventListener('load', () => {
   openModal();
   updateRadar();
 
-  // anima a barra de risco inicial
   setTimeout(() => {
     document.getElementById('riskBarFill').style.width = '0%';
   }, 500);
